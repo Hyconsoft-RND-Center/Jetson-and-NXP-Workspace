@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/ICSimulator.dir/src/ICSimulator.cpp.o -o ICSimulator  -lpthread 
