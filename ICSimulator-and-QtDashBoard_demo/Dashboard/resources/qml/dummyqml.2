@@ -1,0 +1,630 @@
+import QtQuick 2.2
+import QtQuick.Window 2.1
+import QtQuick.Controls 2.12
+import QtQuick.Controls.Styles 1.4
+import QtQuick.Extras 1.4
+
+Window {
+    id: root
+    visible: true
+    width: 1800
+    height: 900
+    color: "#161616"
+    title: "Multi-Receiver Dashboard"
+
+    // Four separate value sources for each receiver
+    ValueSource {
+        id: receiver1
+        objectName: "receiver1"
+    }
+
+    ValueSource {
+        id: receiver2
+        objectName: "receiver2"
+    }
+
+    ValueSource {
+        id: receiver3
+        objectName: "receiver3"
+    }
+
+    ValueSource {
+        id: receiver4
+        objectName: "receiver4"
+    }
+
+    Item {
+        id: container
+        width: root.width - 40
+        height: root.height - 40
+        anchors.centerIn: parent
+
+        Column {
+            id: mainColumn
+            width: parent.width
+            height: parent.height
+            spacing: 10//spacing between each row
+            anchors.centerIn: parent
+
+            // TOP ROW ==============================================
+            Row {
+                id: topRow
+                width: parent.width
+                height: parent.height / 2 - mainColumn.spacing / 2
+                spacing: 20//spacing between each column
+
+                // RECEIVER 1 ==============================================
+                Rectangle {
+                    id: receiver1Box
+                    width: parent.width / 2 - topRow.spacing / 2
+                    height: parent.height
+                    color: "#222222"
+                    border.color: "#444444"
+                    border.width: 1
+                    radius: 5
+
+                    Column {
+                        width: parent.width - 20
+                        height: parent.height - 20
+                        anchors.centerIn: parent
+                        spacing: 35//adjusting space below guages
+
+                        // Header
+                        Rectangle {
+                            width: parent.width
+                            height: 40
+                            color: "#333333"
+                            radius: 3
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "UdpReceiver"
+                                color: "white"
+                                font { bold: true; pixelSize: 18 }
+                            }
+                        }
+
+                        // Gauges
+                        Item {
+                            width: parent.width
+                            height: parent.height - 50
+
+                            // Tachometer (Left-aligned)
+                            CircularGauge {
+                                id: tachometer1
+                                width: parent.width * 0.35
+                                height: parent.height * 0.85
+                                anchors.left: parent.left
+                                value: receiver1.rpm / 1000
+                                maximumValue: 8
+                                style: TachometerStyle {}
+                            }
+
+                            // Speedometer (Right-aligned)
+                            CircularGauge {
+                                id: speedometer1
+                                width: parent.width * 0.35
+                                height: parent.height * 0.85
+                                anchors.right: parent.right
+                                value: receiver1.kph
+                                maximumValue: 280
+                                style: DashboardGaugeStyle {}
+                            }
+
+                            // Fuel and Temperature gauges (Centered between tachometer and speedometer at bottom)
+                            Row {
+                                id: centerGauges1
+                                anchors.bottom: parent.bottom
+                                anchors.left: tachometer1.right
+                                anchors.right: speedometer1.left
+                                spacing: 25
+
+                                anchors.leftMargin: (parent.width * 0.3 - (130 * 2 + 10)) / 2
+                                anchors.rightMargin: (parent.width * 0.3 - (130 * 2 + 10)) / 2
+
+                                CircularGauge {
+                                    id: fuelGauge1
+                                    width: 130
+                                    height: 130
+                                    value: receiver1.fuel
+                                    maximumValue: 1
+                                    style: IconGaugeStyle {
+                                        id: fuelGaugeStyle1
+                                        icon: "qrc:/resources/images/fuel-icon.png"
+                                        minWarningColor: Qt.rgba(0.5, 0, 0, 1)
+                                        tickmarkLabel: Text {
+                                            color: "white"
+                                            visible: styleData.value === 0 || styleData.value === 1
+                                            font.pixelSize: 12
+                                            text: styleData.value === 0 ? "E" : (styleData.value === 1 ? "F" : "")
+                                        }
+                                    }
+                                }
+
+                                CircularGauge {
+                                    id: tempGauge1
+                                    width: 130
+                                    height: 130
+                                    value: receiver1.temperature
+                                    maximumValue: 1
+                                    style: IconGaugeStyle {
+                                        id: tempGaugeStyle1
+                                        icon: "qrc:/resources/images/temperature-icon.png"
+                                        maxWarningColor: Qt.rgba(0.5, 0, 0, 1)
+                                        tickmarkLabel: Text {
+                                            color: "white"
+                                            visible: styleData.value === 0 || styleData.value === 1
+                                            font.pixelSize: 12
+                                            text: styleData.value === 0 ? "C" : (styleData.value === 1 ? "H" : "")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Left indicator
+                    TurnIndicator {
+                        id: leftIndicator1
+                        width: 40
+                        height: 40
+                        anchors {
+                            left: parent.left
+                            leftMargin: 10
+                            top: parent.top
+                            topMargin: 50
+                        }
+                        direction: Qt.LeftArrow
+                        on: receiver1.turnSignal == Qt.LeftArrow
+                    }
+
+                    // Right indicator
+                    TurnIndicator {
+                        id: rightIndicator1
+                        width: 40
+                        height: 40
+                        anchors {
+                            right: parent.right
+                            rightMargin: 10
+                            top: parent.top
+                            topMargin: 50
+                        }
+                        direction: Qt.RightArrow
+                        on: receiver1.turnSignal == Qt.RightArrow
+                    }
+                }
+
+                // RECEIVER 2 ==============================================
+                Rectangle {
+                    id: receiver2Box
+                    width: parent.width / 2 - topRow.spacing / 2
+                    height: parent.height
+                    color: "#222222"
+                    border.color: "#444444"
+                    border.width: 1
+                    radius: 5
+
+                    Column {
+                        width: parent.width - 20
+                        height: parent.height - 20
+                        anchors.centerIn: parent
+                        spacing: 35//adjusting space below guages
+
+                        // Header
+                        Rectangle {
+                            width: parent.width
+                            height: 40
+                            color: "#333333"
+                            radius: 3
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "CanReceiver"
+                                color: "white"
+                                font { bold: true; pixelSize: 18 }
+                            }
+                        }
+
+                        // Gauges
+                        Item {
+                            width: parent.width
+                            height: parent.height - 50
+
+                            // Tachometer (Left-aligned)
+                            CircularGauge {
+                                id: tachometer2
+                                width: parent.width * 0.35
+                                height: parent.height * 0.85
+                                anchors.left: parent.left
+                                value: receiver2.rpm / 1000
+                                maximumValue: 8
+                                style: TachometerStyle {}
+                            }
+
+                            // Speedometer (Right-aligned)
+                            CircularGauge {
+                                id: speedometer2
+                                width: parent.width * 0.35
+                                height: parent.height * 0.85
+                                anchors.right: parent.right
+                                value: receiver2.kph
+                                maximumValue: 280
+                                style: DashboardGaugeStyle {}
+                            }
+
+                            // Fuel and Temperature gauges (Centered between tachometer and speedometer at bottom)
+                            Row {
+                                id: centerGauges2
+                                anchors.bottom: parent.bottom
+                                anchors.left: tachometer2.right
+                                anchors.right: speedometer2.left
+                                spacing: 25
+
+                                anchors.leftMargin: (parent.width * 0.3 - (130 * 2 + 10)) / 2
+                                anchors.rightMargin: (parent.width * 0.3 - (130 * 2 + 10)) / 2
+
+                                CircularGauge {
+                                    id: fuelGauge2
+                                    width: 130
+                                    height: 130
+                                    value: receiver2.fuel
+                                    maximumValue: 1
+                                    style: IconGaugeStyle {
+                                        id: fuelGaugeStyle2
+                                        icon: "qrc:/resources/images/fuel-icon.png"
+                                        minWarningColor: Qt.rgba(0.5, 0, 0, 1)
+                                        tickmarkLabel: Text {
+                                            color: "white"
+                                            visible: styleData.value === 0 || styleData.value === 1
+                                            font.pixelSize: 12
+                                            text: styleData.value === 0 ? "E" : (styleData.value === 1 ? "F" : "")
+                                        }
+                                    }
+                                }
+
+                                CircularGauge {
+                                    id: tempGauge2
+                                    width: 130
+                                    height: 130
+                                    value: receiver2.temperature
+                                    maximumValue: 1
+                                    style: IconGaugeStyle {
+                                        id: tempGaugeStyle2
+                                        icon: "qrc:/resources/images/temperature-icon.png"
+                                        maxWarningColor: Qt.rgba(0.5, 0, 0, 1)
+                                        tickmarkLabel: Text {
+                                            color: "white"
+                                            visible: styleData.value === 0 || styleData.value === 1
+                                            font.pixelSize: 12
+                                            text: styleData.value === 0 ? "C" : (styleData.value === 1 ? "H" : "")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Left indicator
+                    TurnIndicator {
+                        id: leftIndicator2
+                        width: 40
+                        height: 40
+                        anchors {
+                            left: parent.left
+                            leftMargin: 10
+                            top: parent.top
+                            topMargin: 50
+                        }
+                        direction: Qt.LeftArrow
+                        on: receiver2.turnSignal == Qt.LeftArrow
+                    }
+
+                    // Right indicator
+                    TurnIndicator {
+                        id: rightIndicator2
+                        width: 40
+                        height: 40
+                        anchors {
+                            right: parent.right
+                            rightMargin: 10
+                            top: parent.top
+                            topMargin: 50
+                        }
+                        direction: Qt.RightArrow
+                        on: receiver2.turnSignal == Qt.RightArrow
+                    }
+                }
+            }
+
+            // BOTTOM ROW ==============================================
+            Row {
+                id: bottomRow
+                width: parent.width
+                height: parent.height / 2 - mainColumn.spacing / 2
+                spacing: 20
+
+                // RECEIVER 3 ==============================================
+                Rectangle {
+                    id: receiver3Box
+                    width: parent.width / 2 - bottomRow.spacing / 2
+                    height: parent.height
+                    color: "#222222"
+                    border.color: "#444444"
+                    border.width: 1
+                    radius: 5
+
+                    Column {
+                        width: parent.width - 20
+                        height: parent.height - 20
+                        anchors.centerIn: parent
+                        spacing: 35//adjusting space below guages
+
+                        // Header
+                        Rectangle {
+                            width: parent.width
+                            height: 40
+                            color: "#333333"
+                            radius: 3
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "LinReceiver"
+                                color: "white"
+                                font { bold: true; pixelSize: 18 }
+                            }
+                        }
+
+                        // Gauges
+                        Item {
+                            width: parent.width
+                            height: parent.height - 50
+
+                            // Tachometer (Left-aligned)
+                            CircularGauge {
+                                id: tachometer3
+                                width: parent.width * 0.35
+                                height: parent.height * 0.85
+                                anchors.left: parent.left
+                                value: receiver3.rpm / 1000
+                                maximumValue: 8
+                                style: TachometerStyle {}
+                            }
+
+                            // Speedometer (Right-aligned)
+                            CircularGauge {
+                                id: speedometer3
+                                width: parent.width * 0.35
+                                height: parent.height * 0.85
+                                anchors.right: parent.right
+                                value: receiver3.kph
+                                maximumValue: 280
+                                style: DashboardGaugeStyle {}
+                            }
+
+                            // Fuel and Temperature gauges (Centered between tachometer and speedometer at bottom)
+                            Row {
+                                id: centerGauges3
+                                anchors.bottom: parent.bottom
+                                anchors.left: tachometer3.right
+                                anchors.right: speedometer3.left
+                                spacing: 25
+
+                                anchors.leftMargin: (parent.width * 0.3 - (130 * 2 + 10)) / 2
+                                anchors.rightMargin: (parent.width * 0.3 - (130 * 2 + 10)) / 2
+
+                                CircularGauge {
+                                    id: fuelGauge3
+                                    width: 130
+                                    height: 130
+                                    value: receiver3.fuel
+                                    maximumValue: 1
+                                    style: IconGaugeStyle {
+                                        id: fuelGaugeStyle3
+                                        icon: "qrc:/resources/images/fuel-icon.png"
+                                        minWarningColor: Qt.rgba(0.5, 0, 0, 1)
+                                        tickmarkLabel: Text {
+                                            color: "white"
+                                            visible: styleData.value === 0 || styleData.value === 1
+                                            font.pixelSize: 12
+                                            text: styleData.value === 0 ? "E" : (styleData.value === 1 ? "F" : "")
+                                        }
+                                    }
+                                }
+
+                                CircularGauge {
+                                    id: tempGauge3
+                                    width: 130
+                                    height: 130
+                                    value: receiver3.temperature
+                                    maximumValue: 1
+                                    style: IconGaugeStyle {
+                                        id: tempGaugeStyle3
+                                        icon: "qrc:/resources/images/temperature-icon.png"
+                                        maxWarningColor: Qt.rgba(0.5, 0, 0, 1)
+                                        tickmarkLabel: Text {
+                                            color: "white"
+                                            visible: styleData.value === 0 || styleData.value === 1
+                                            font.pixelSize: 12
+                                            text: styleData.value === 0 ? "C" : (styleData.value === 1 ? "H" : "")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Left indicator
+                    TurnIndicator {
+                        id: leftIndicator3
+                        width: 40
+                        height: 40
+                        anchors {
+                            left: parent.left
+                            leftMargin: 10
+                            top: parent.top
+                            topMargin: 50
+                        }
+                        direction: Qt.LeftArrow
+                        on: receiver3.turnSignal == Qt.LeftArrow
+                    }
+
+                    // Right indicator
+                    TurnIndicator {
+                        id: rightIndicator3
+                        width: 40
+                        height: 40
+                        anchors {
+                            right: parent.right
+                            rightMargin: 10
+                            top: parent.top
+                            topMargin: 50
+                        }
+                        direction: Qt.RightArrow
+                        on: receiver3.turnSignal == Qt.RightArrow
+                    }
+                }
+
+                // RECEIVER 4 ==============================================
+                Rectangle {
+                    id: receiver4Box
+                    width: parent.width / 2 - bottomRow.spacing / 2
+                    height: parent.height
+                    color: "#222222"
+                    border.color: "#444444"
+                    border.width: 1
+                    radius: 5
+
+                    Column {
+                        width: parent.width - 20
+                        height: parent.height - 20
+                        anchors.centerIn: parent
+                        spacing: 35 //adjusting space below guages
+
+                        // Header
+                        Rectangle {
+                            width: parent.width
+                            height: 40
+                            color: "#333333"
+                            radius: 3
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "FlexRayReceiver"
+                                color: "white"
+                                font { bold: true; pixelSize: 18 }
+                            }
+                        }
+
+                        // Gauges
+                        Item {
+                            width: parent.width
+                            height: parent.height - 50
+
+                            // Tachometer (Left-aligned)
+                            CircularGauge {
+                                id: tachometer4
+                                width: parent.width * 0.35
+                                height: parent.height * 0.85
+                                anchors.left: parent.left
+                                value: receiver4.rpm / 1000
+                                maximumValue: 8
+                                style: TachometerStyle {}
+                            }
+
+                            // Speedometer (Right-aligned)
+                            CircularGauge {
+                                id: speedometer4
+                                width: parent.width * 0.35
+                                height: parent.height * 0.85
+                                anchors.right: parent.right
+                                value: receiver4.kph
+                                maximumValue: 280
+                                style: DashboardGaugeStyle {}
+                            }
+
+                            // Fuel and Temperature gauges (Centered between tachometer and speedometer at bottom)
+                            Row {
+                                id: centerGauges4
+                                anchors.bottom: parent.bottom
+                                anchors.left: tachometer4.right
+                                anchors.right: speedometer4.left
+                                spacing: 25
+
+                                anchors.leftMargin: (parent.width * 0.3 - (130 * 2 + 10)) / 2
+                                anchors.rightMargin: (parent.width * 0.3 - (130 * 2 + 10)) / 2
+
+                                CircularGauge {
+                                    id: fuelGauge4
+                                    width: 130
+                                    height: 130
+                                    value: receiver4.fuel
+                                    maximumValue: 1
+                                    style: IconGaugeStyle {
+                                        id: fuelGaugeStyle4
+                                        icon: "qrc:/resources/images/fuel-icon.png"
+                                        minWarningColor: Qt.rgba(0.5, 0, 0, 1)
+                                        tickmarkLabel: Text {
+                                            color: "white"
+                                            visible: styleData.value === 0 || styleData.value === 1
+                                            font.pixelSize: 12
+                                            text: styleData.value === 0 ? "E" : (styleData.value === 1 ? "F" : "")
+                                        }
+                                    }
+                                }
+
+                                CircularGauge {
+                                    id: tempGauge4
+                                    width: 130
+                                    height: 130
+                                    value: receiver4.temperature
+                                    maximumValue: 1
+                                    style: IconGaugeStyle {
+                                        id: tempGaugeStyle4
+                                        icon: "qrc:/resources/images/temperature-icon.png"
+                                        maxWarningColor: Qt.rgba(0.5, 0, 0, 1)
+                                        tickmarkLabel: Text {
+                                            color: "white"
+                                            visible: styleData.value === 0 || styleData.value === 1
+                                            font.pixelSize: 12
+                                            text: styleData.value === 0 ? "C" : (styleData.value === 1 ? "H" : "")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Left indicator
+                    TurnIndicator {
+                        id: leftIndicator4
+                        width: 40
+                        height: 40
+                        anchors {
+                            left: parent.left
+                            leftMargin: 10
+                            top: parent.top
+                            topMargin: 50
+                        }
+                        direction: Qt.LeftArrow
+                        on: receiver4.turnSignal == Qt.LeftArrow
+                    }
+
+                    // Right indicator
+                    TurnIndicator {
+                        id: rightIndicator4
+                        width: 40
+                        height: 40
+                        anchors {
+                            right: parent.right
+                            rightMargin: 10
+                            top: parent.top
+                            topMargin: 50
+                        }
+                        direction: Qt.RightArrow
+                        on: receiver4.turnSignal == Qt.RightArrow
+                    }
+                }
+            }
+        }
+    }
+}
