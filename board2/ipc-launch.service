@@ -1,0 +1,15 @@
+[Unit]
+Description=Run IPC binary at boot
+After=network.target
+
+[Service]
+ExecStart=/root/b2_run_ipc.sh
+WorkingDirectory=/root
+StandardOutput=journal
+StandardError=journal
+Restart=on-failure
+PrivateTmp=no
+KeyringMode=shared
+
+[Install]
+WantedBy=multi-user.target
